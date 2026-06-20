@@ -12,7 +12,7 @@ A home SOC environment built with Splunk Enterprise, Kali Linux, and Ubuntu Serv
 * [Detections](#detections)
 * [MITRE ATT&CK Mapping](#mitre-attck-mapping)
 * [Alerts](#alerts)
-* [Dashboard](#dashboard)
+* [Dashboard](#dashboard-1)
 * [Repository Structure](#repository-structure)
 
 ## Screenshots
