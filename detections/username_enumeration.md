@@ -12,10 +12,10 @@ Ubuntu auth.log forwarded through Splunk Universal Forwarder.
 ## SPL Query
 
 ```spl
-index=main host="Ubuntu" "invalid user"
-| rex "invalid user (?<user>\S+)"
-| stats count by user
-| where count >= 5
+index=main host="Ubuntu" "invalid user" 
+| rex "for invalid user (?<user>\S+) from (?<src_ip>\d+\.\d+\.\d+\.\d+)"
+| stats dc(user) as unique_usernames, values(user) as attempted_usernames by src_ip
+| where unique_usernames >= 5
 ```
 
 ## Attack Simulation

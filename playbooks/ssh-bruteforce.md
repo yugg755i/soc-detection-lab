@@ -59,7 +59,7 @@ If successful login follows repeated failures, escalate investigation.
 
 ## Severity
 
-Medium
+High
 
 ## MITRE ATT&CK
 
