@@ -26,6 +26,3 @@ Splunk searches for user creation events in the authentication logs. Any event i
 ## Expected Output
 
 Generate an alert whenever a new user account is created on the Ubuntu server.
-
-```
-```

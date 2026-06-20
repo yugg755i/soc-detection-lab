@@ -28,5 +28,3 @@ Splunk searches for failed SSH authentication events, extracts source IP address
 ## Expected Output
 
 Generate an alert when a source IP exceeds the failed login threshold, which indicates a potential brute-force attack on the Ubuntu server.
-
-

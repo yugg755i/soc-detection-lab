@@ -29,6 +29,3 @@ Splunk searches for authentication events containing invalid usernames, extracts
 ## Expected Output
 
 Generate an alert when invalid username attempts exceed the defined threshold, indicating possible reconnaissance or username enumeration activity.
-
-```
-```

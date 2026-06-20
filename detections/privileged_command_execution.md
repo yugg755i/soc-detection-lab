@@ -26,6 +26,3 @@ Splunk searches for sudo activity within the authentication logs. Events contain
 ## Expected Output
 
 Generate an alert whenever a privileged command is executed using sudo on the Ubuntu server.
-
-```
-```
