@@ -44,4 +44,4 @@ Medium
 
 ## MITRE ATT&CK
 
-T1589 - Gather Victim Identity Information
+Related ATT&CK tactic: Reconnaissance
