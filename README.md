@@ -1,6 +1,6 @@
 # SOC Detection Lab
 
-A home SOC environment built with Splunk Enterprise, Kali Linux, and Ubuntu Server to simulate, detect, and respond to common Linux attack scenarios. The goal was to go beyond "stand up Splunk" and build a full detection lifecycle: generate real attack telemetry, write detections against it, configure alerting, and visualize everything in an analyst-facing dashboard.
+A home SOC environment built with Splunk Enterprise, Kali Linux, and Ubuntu Server to simulate, detect, and respond to common Linux attack scenarios. The lab focuses on generating realistic attack telemetry, developing detections, creating alerts, and documenting investigation procedures through analyst playbooks and dashboards.
 
 **Stack:** Splunk Enterprise · Splunk Universal Forwarder · Kali Linux · Ubuntu Server · VirtualBox
 
@@ -66,7 +66,9 @@ index=main host="Ubuntu" "Failed password"
 ```
 
 Full writeups (including thresholds, rationale, and false-positive considerations) for every detection are in [detections](./detections). 
+
 Step-by-step analyst response procedures are in [playbooks](./playbooks). 
+
 Full lab build instructions are in [setup.md](./docs/setup.md).
 
 ## MITRE ATT&CK Mapping
@@ -102,7 +104,7 @@ A custom SOC dashboard visualizes:
 * User creation events
 * Privileged command usage
 
-This gives at-a-glance visibility into authentication activity and attack simulations run against the lab. The dashboard was built using telemetry generated from the attack scenarios executed within the lab environment.
+The dashboard provides visibility into authentication activity, attack simulations, and detection results across the lab environment.
 
 ## Repository Structure
 
