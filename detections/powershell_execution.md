@@ -95,11 +95,13 @@ Potential false positives include:
 
 ## References
 
-* MITRE ATT&CK — T1059.001
-* Microsoft Sysmon Documentation
+- MITRE ATT&CK – https://attack.mitre.org/techniques/T1059/001/
+- Microsoft Sysmon Documentation – https://learn.microsoft.com/sysinternals/downloads/sysmon
 
 ## Screenshots
 
-![execution](../screenshots/powershell_execution/execution.png)
-![splunk_search](../screenshots/powershell_execution/splunk_search.png)
-![raw_event](../screenshots/powershell_execution/raw_event.png)
+| Screenshot | Preview |
+|------------|---------|
+| Execution | ![Execution](../screenshots/powershell_execution/execution.png) |
+| Splunk Search | ![Splunk Search](../screenshots/powershell_execution/splunk_search.png) |
+| Raw Event | ![Raw Event](../screenshots/powershell_execution/raw_event.png) |
