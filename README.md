@@ -18,11 +18,11 @@ A home SOC environment built with Splunk Enterprise, Kali Linux, and Ubuntu Serv
 ## Screenshots
 
 ### Dashboard
-![Dashboard](./screenshots/dashboard.png)
-![Dashboard2](./screenshots/dashboard2.png)
+![Dashboard](./screenshots/dashboards/dashboard.png)
+![Dashboard2](./screenshots/dashboards/dashboard2.png)
 
 ### Alerts
-![alerts](./screenshots/alerts.png)
+![alerts](./screenshots/alerts/alerts.png)
 
 ## Architecture
 
