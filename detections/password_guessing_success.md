@@ -93,7 +93,7 @@ Potential false positives include:
 
 | Screenshot | Preview |
 |------------|---------|
-| Execution | ![](../screenshots/password_guessing_success/execution.png) |
-| Search | ![](../screenshots/password_guessing_success/search.png) |
-| Raw Event | ![](../screenshots/password_guessing_success/raw_event.png) |
-| Alert Configuration | ![](../screenshots/password_guessing_success/alert_configuration.png) |
+| Execution | ![Execution](../screenshots/password_guessing_success/execution.png) |
+| Search | ![Search](../screenshots/password_guessing_success/search.png) |
+| Raw Event | ![Raw Event](../screenshots/password_guessing_success/raw_event.png) |
+| Alert Configuration | ![Alert Configuration](../screenshots/password_guessing_success/alert_configuration.png) |

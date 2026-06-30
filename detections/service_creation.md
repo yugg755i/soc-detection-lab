@@ -104,3 +104,4 @@ Potential false positives include:
 | Execution | ![Execution](../screenshots/service_creation/execution.png) |
 | Search | ![Search](../screenshots/service_creation/search.png) |
 | Raw Event | ![Raw Event](../screenshots/service_creation/raw_event.png) |
+| Alert Configuration | ![Alert Configuration](../screenshots/service_creation/alert_configuration.png) |

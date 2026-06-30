@@ -100,5 +100,6 @@ Potential false positives include:
 | Screenshot    | Preview                                                          |
 | ------------- | ---------------------------------------------------------------- |
 | Execution     | ![Execution](../screenshots/cmd_execution/execution.png)         |
-| Search | ![Splunk Search](../screenshots/cmd_execution/search.png) |
+| Search | ![Search](../screenshots/cmd_execution/search.png) |
 | Raw Event     | ![Raw Event](../screenshots/cmd_execution/raw_event.png)         |
+| Alert Configuration | ![Alert Configuration](../screenshots/cmd_execution/alert_configuration.png) |

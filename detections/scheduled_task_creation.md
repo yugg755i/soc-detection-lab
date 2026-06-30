@@ -105,3 +105,4 @@ Potential false positives include:
 | Execution | ![Execution](../screenshots/scheduled_task_creation/execution.png) |
 | Search | ![Search](../screenshots/scheduled_task_creation/search.png) |
 | Raw Event | ![Raw Event](../screenshots/scheduled_task_creation/raw_event.png) |
+| Alert Configuration | ![Alert Configuration](../screenshots/scheduled_task_creation/alert_configuration.png) |

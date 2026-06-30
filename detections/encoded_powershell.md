@@ -99,5 +99,6 @@ Potential false positives include:
 | Screenshot    | Preview                                                               |
 | ------------- | --------------------------------------------------------------------- |
 | Execution     | ![Execution](../screenshots/encoded_powershell/execution.png)         |
-| Search | ![Splunk Search](../screenshots/encoded_powershell/splunk_search.png) |
+| Search | ![Search](../screenshots/encoded_powershell/search.png) |
 | Raw Event     | ![Raw Event](../screenshots/encoded_powershell/raw_event.png)         |
+| Alert Configuration | ![Alert Configuration](../screenshots/encoded_powershell/alert_configuration.png) |

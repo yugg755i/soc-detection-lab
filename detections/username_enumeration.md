@@ -95,7 +95,7 @@ Potential false positives include:
 
 | Screenshot | Preview |
 |------------|---------|
-| Execution | ![](../screenshots/username_enumeration/execution.png) |
-| Search | ![](../screenshots/username_enumeration/search.png) |
-| Raw Event | ![](../screenshots/username_enumeration/raw_event.png) |
-| Alert Configuration | ![](../screenshots/username_enumeration/alert_configuration.png) |
+| Execution | ![Execution](../screenshots/username_enumeration/execution.png) |
+| Search | ![Search](../screenshots/username_enumeration/search.png) |
+| Raw Event | ![Raw Event](../screenshots/username_enumeration/raw_event.png) |
+| Alert Configuration | ![Alert Configuration](../screenshots/username_enumeration/alert_configuration.png) |

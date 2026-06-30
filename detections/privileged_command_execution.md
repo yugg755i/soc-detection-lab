@@ -86,7 +86,7 @@ Potential false positives include:
 
 | Screenshot | Preview |
 |------------|---------|
-| Execution | ![](../screenshots/privileged_command_execution/execution.png) |
-| Search | ![](../screenshots/privileged_command_execution/search.png) |
-| Raw Event | ![](../screenshots/privileged_command_execution/raw_event.png) |
-| Alert Configuration | ![](../screenshots/privileged_command_execution/alert_configuration.png) |
+| Execution | ![Execution](../screenshots/privileged_command_execution/execution.png) |
+| Search | ![Search](../screenshots/privileged_command_execution/search.png) |
+| Raw Event | ![Raw Event](../screenshots/privileged_command_execution/raw_event.png) |
+| Alert Configuration | ![Alert Configuration](../screenshots/privileged_command_execution/alert_configuration.png) |

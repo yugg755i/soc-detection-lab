@@ -114,3 +114,4 @@ Potential false positives include:
 | Execution | ![Execution](../screenshots/lolbin_execution/execution.png) |
 | Search | ![Search](../screenshots/lolbin_execution/search.png) |
 | Raw Event | ![Raw Event](../screenshots/lolbin_execution/raw_event.png) |
+| Alert Configuration | ![Alert Configuration](../screenshots/lolbin_execution/alert_configuration.png) |

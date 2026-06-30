@@ -93,7 +93,7 @@ Potential false positives include:
 
 | Screenshot | Preview |
 |------------|---------|
-| Execution | ![](../screenshots/ssh_brute_force/execution.png) |
-| Search | ![](../screenshots/ssh_brute_force/search.png) |
-| Raw Event | ![](../screenshots/ssh_brute_force/raw_event.png) |
-| Alert Configuration | ![](../screenshots/ssh_brute_force/alert_configuration.png) |
+| Execution | ![Execution](../screenshots/ssh_brute_force/execution.png) |
+| Search | ![Search](../screenshots/ssh_brute_force/search.png) |
+| Raw Event | ![Raw Event](../screenshots/ssh_brute_force/raw_event.png) |
+| Alert Configuration | ![Alert Configuration](../screenshots/ssh_brute_force/alert_configuration.png) |
