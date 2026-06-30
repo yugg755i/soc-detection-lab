@@ -1,47 +1,103 @@
-
-# Username Enumeration Detection Playbook
+# Username Enumeration Playbook
 
 ## Alert Name
 
-Username Enumeration Detection
+Username Enumeration
 
 ## Description
 
-This alert triggers when multiple authentication attempts are made using invalid usernames.
-
-## Investigation Steps
-
-### 1. Identify Source IP
-
-Review the source IP responsible for the enumeration activity.
-
-### 2. Review Invalid Usernames
-
-Determine which usernames were targeted during the attack.
-
-### 3. Count Enumeration Attempts
-
-Review the number of invalid username attempts.
-
-### 4. Check for Valid Username Activity
-
-Determine whether the source IP later attempted valid usernames or successful logins.
-
-### 5. Assess Severity
-
-If the activity appears targeted or persistent, escalate the investigation.
-
-## Response Actions
-
-* Investigate source IP.
-* Monitor for additional authentication activity.
-* Block source IP if malicious activity continues.
-* Escalate if reconnaissance activity persists.
+This alert identifies repeated SSH authentication attempts using multiple invalid usernames from a single source IP.
 
 ## Severity
 
 Medium
 
-## MITRE ATT&CK
+## ATT&CK
 
-Related ATT&CK tactic: Reconnaissance
+* Technique: T1589.001 — Gather Victim Identity Information: Credentials
+* Tactic: Reconnaissance
+
+## Investigation Steps
+
+### 1. Confirm the Enumeration Activity
+
+Verify that the alert corresponds to repeated authentication attempts using invalid usernames.
+
+Review:
+
+* src_ip
+* unique_usernames
+* attempted_usernames
+* host
+* _time
+
+Confirm that the username threshold was exceeded.
+
+### 2. Review the Source IP
+
+Determine whether the source IP belongs to:
+
+* Internal infrastructure
+* An approved security assessment
+* An external system
+
+Review previous authentication activity associated with the same IP address.
+
+### 3. Analyze Attempted Usernames
+
+Review the list of attempted usernames.
+
+Determine whether the attacker targeted:
+
+* Administrative accounts
+* Service accounts
+* Common usernames
+* Randomly generated usernames
+
+This helps identify reconnaissance patterns.
+
+### 4. Investigate Related Activity
+
+Review additional authentication events around the same timeframe.
+
+Look for:
+
+* Password guessing attempts
+* SSH brute-force activity
+* Successful SSH logins
+* Privileged command execution
+* User creation
+
+Determine whether the enumeration is part of a larger attack chain.
+
+### 5. Determine the Triage Outcome
+
+Classify the activity as one of the following:
+
+* Authorized penetration testing
+* Security assessment
+* Vulnerability scanning
+* Suspicious activity requiring escalation
+
+## Response Actions
+
+* Verify whether the activity was authorized.
+* Investigate the originating source IP.
+* Monitor for continued authentication attempts.
+* Block malicious source IPs if appropriate.
+* Escalate confirmed reconnaissance activity.
+
+## Detection Tuning
+
+Exclude approved vulnerability scanners and penetration testing systems where appropriate.
+
+## False Positive Considerations
+
+* Internal vulnerability scanners
+* Authorized penetration testing
+* Security assessments
+* Automated authentication testing
+
+## Validation
+
+The playbook was validated by performing SSH authentication attempts against multiple non-existent user accounts from the Kali Linux attacker machine.
