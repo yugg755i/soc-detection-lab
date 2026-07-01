@@ -1,166 +1,250 @@
-
-# Setup Guide
+# Environment Setup
 
 ## Overview
 
-This lab simulates common Linux-based attack scenarios and demonstrates how security events can be collected, analyzed, and detected using Splunk Enterprise.
+This document describes the environment used to build the SOC Detection Lab and the steps required to reproduce it.
 
-The environment consists of:
-
-* Kali Linux VM (Attacker)
-* Ubuntu Server VM (Victim)
-* Splunk Enterprise (SIEM)
-* Splunk Universal Forwarder (Log Collection)
+The lab consists of a centralized Splunk Enterprise instance running on an Arch Linux host with Windows and Linux endpoints forwarding security telemetry through Splunk Universal Forwarders. The environment is designed to support attack simulation, detection engineering, alert validation, dashboard development, and analyst playbooks.
 
 ---
 
-## Environment Setup
+# Lab Architecture
 
-### 1. Create Virtual Machines
-
-Create the following virtual machines in VirtualBox:
-
-* Kali Linux VM
-* Ubuntu Server VM
-
-Both VMs were configured with:
-
-* NAT Adapter (Internet Access)
-* Internal Network Adapter (VM-to-VM Communication)
+| Component | Purpose |
+|-----------|---------|
+| Arch Linux | Host operating system running Splunk Enterprise and virtual machines |
+| QEMU/KVM | Virtualization platform |
+| Windows 10 | Endpoint generating Sysmon and Windows Security telemetry |
+| Ubuntu Server | Linux endpoint generating authentication and administrative logs |
+| Kali Linux | Attacker system used for controlled attack simulations |
+| Splunk Enterprise | Centralized log collection, detection, alerting, and visualization |
+| Splunk Universal Forwarder | Log forwarding from endpoints to Splunk |
 
 ---
 
-### 2. Configure Network Connectivity
+# Prerequisites
 
-Assign IP addresses to allow communication between the VMs.
+The following software is required:
 
-Example:
-
-| System        | IP Address     |
-| ------------- | -------------- |
-| Kali Linux    | 192.168.100.10 |
-| Ubuntu Server | 192.168.100.20 |
-
-Verify connectivity using:
-
-```bash
-ping <target-ip>
-```
+- Arch Linux
+- QEMU/KVM
+- Windows 10
+- Ubuntu Server
+- Kali Linux
+- Splunk Enterprise
+- Splunk Universal Forwarder
+- Sysmon
 
 ---
 
-### 3. Enable SSH on Ubuntu
+# Environment Setup
 
-Install and start OpenSSH Server on Ubuntu:
+## 1. Install Splunk Enterprise
 
-```bash
-sudo apt update
-sudo apt install openssh-server -y
-sudo systemctl enable ssh
-sudo systemctl start ssh
-```
+Install Splunk Enterprise on the Arch Linux host.
 
-Verify SSH access from Kali:
+After installation:
 
-```bash
-ssh username@192.168.100.20
-```
+- Start the Splunk service.
+- Configure the management account.
+- Verify access through the web interface.
+- Enable receiving on port `9997` (Settings → Forwarding and receiving → Configure receiving → Add new). This is required before any forwarder can send data.
+
+Telemetry will be indexed into Splunk's default `main` index — no index creation is required.
 
 ---
 
-### 4. Install Splunk Enterprise
+## 2. Create Virtual Machines
 
-Install Splunk Enterprise on the host system.
+Create the following virtual machines:
 
-Configure receiving on port:
+### Windows 10
 
-```text
-9997
-```
+Purpose:
 
-This port will receive logs from the Universal Forwarder.
+- Generate Windows endpoint telemetry.
+
+Install:
+
+- Splunk Universal Forwarder
+- Sysmon
 
 ---
 
-### 5. Install Splunk Universal Forwarder
+### Ubuntu Server
 
-Install Splunk Universal Forwarder on the Ubuntu server.
+Purpose:
 
-Configure forwarding to the Splunk Enterprise instance.
+- Generate Linux authentication telemetry.
 
-Monitor:
+Install:
+
+- Splunk Universal Forwarder
+
+---
+
+### Kali Linux
+
+Purpose:
+
+- Execute attack simulations against the Ubuntu Server and Windows 10 endpoints.
+
+No Splunk components are required on this system.
+
+---
+
+# Configure Log Forwarding
+
+## Ubuntu Server
+
+Configure the Splunk Universal Forwarder to monitor:
 
 ```text
 /var/log/auth.log
 ```
 
-Forward logs to:
+Forward events to the Splunk Enterprise server.
 
-```text
-<SPLUNK_SERVER_IP>:9997
-```
-
----
-
-### 6. Verify Log Ingestion
-
-Confirm that authentication events are visible in Splunk.
-
-Example search:
+Verify that authentication events appear within:
 
 ```spl
-index=main host="Ubuntu"
+index=main host="ubuntuserver"
 ```
 
 ---
 
-## Attack Simulation
+## Windows 10
 
-The following activities were performed from the Kali VM:
+Install Sysmon using an appropriate configuration file.
 
-* SSH Brute Force
-* Username Enumeration
-* Password Guessing
-* User Creation
-* Privileged Command Execution
+Configure the Splunk Universal Forwarder to monitor:
 
-These actions generated security-relevant events inside Ubuntu authentication logs.
+- Microsoft-Windows-Sysmon/Operational
+- Security
 
----
+Verify telemetry using:
 
-## Detection Development
-
-Custom detections were created in Splunk to identify:
-
-* SSH Brute Force Activity
-* Password Guessing Success
-* Username Enumeration
-* New User Creation
-* Privileged Command Execution
-
-Alerts were configured based on detection thresholds.
-
----
-
-## Dashboard Creation
-
-A SOC dashboard was developed to visualize:
-
-* Failed Login Attempts
-* Successful Logins
-* Source IP Activity
-* Targeted Users
-* User Creation Events
-* Privileged Command Usage
-
----
-
-## Architecture
-
-Refer to:
-
-```text
-architecture/architecture.png
+```spl
+index=main source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
 ```
 
-for the complete lab architecture diagram.
+and
+
+```spl
+index=main source="WinEventLog:Security"
+```
+
+---
+
+# Verify Telemetry
+
+Confirm that both Linux and Windows events are successfully indexed.
+
+Example Linux search:
+
+```spl
+index=main host="ubuntuserver"
+```
+
+Example Windows Sysmon search:
+
+```spl
+index=main source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+```
+
+Example Windows Security search:
+
+```spl
+index=main source="WinEventLog:Security"
+```
+
+---
+
+# Detection Validation
+
+After confirming telemetry ingestion, execute the attack simulations documented in each detection.
+
+Examples include:
+
+## Linux
+
+- SSH brute force
+- Password guessing
+- Username enumeration
+- User creation
+- Privileged command execution
+
+## Windows
+
+- CMD execution
+- PowerShell execution
+- Encoded PowerShell
+- LOLBin execution
+- Scheduled task creation
+- Service creation
+- Local user creation
+
+Each simulation should produce telemetry that matches its corresponding SPL detection.
+
+---
+
+# Alerts
+
+Create a scheduled alert for every documented detection.
+
+Each alert should:
+
+- Execute on a scheduled interval
+- Trigger when the detection returns results
+- Generate a notable event for analyst review
+
+Alert configuration screenshots are included within each detection document.
+
+---
+
+# Dashboard
+
+Import or recreate the Dashboard Studio dashboard described in `docs/dashboards.md`.
+
+The dashboard provides:
+
+- Environment summary KPIs
+- Linux authentication monitoring
+- Windows endpoint monitoring
+- Detection summaries
+- Investigation tables
+
+---
+
+# Validation Checklist
+
+Verify the following before considering the lab complete:
+
+- Splunk Enterprise is operational and receiving on port 9997.
+- All virtual machines are running.
+- Ubuntu authentication logs are forwarded.
+- Windows Sysmon events are forwarded.
+- Windows Security events are forwarded.
+- Every SPL detection returns expected telemetry.
+- Alerts trigger successfully.
+- Dashboard panels populate correctly.
+- Detection documentation includes screenshots.
+- Analyst playbooks match the implemented detections.
+
+---
+
+# Related Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Architecture](architecture.md) | Overall lab architecture |
+| [Workflow](workflow.md) | Detection validation workflow |
+| [Telemetry](telemetry.md) | Collected telemetry |
+| [Detections](detections.md) | Detection catalog |
+| [Dashboards](dashboards.md) | Dashboard implementation |
+
+---
+
+# Summary
+
+The SOC Detection Lab provides a reproducible environment for developing and validating security detections across Windows and Linux platforms. By combining Splunk Enterprise, Sysmon, Windows Security logs, Ubuntu authentication logs, and controlled attack simulations, the lab demonstrates a complete detection engineering workflow from telemetry collection through alerting, dashboard visualization, and analyst investigation.

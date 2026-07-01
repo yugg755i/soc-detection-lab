@@ -1,3 +1,4 @@
+# old
 # SOC Detection Lab
 
 A home SOC environment built with Splunk Enterprise, Kali Linux, and Ubuntu Server to simulate, detect, and respond to common Linux attack scenarios. The lab focuses on generating realistic attack telemetry, developing detections, creating alerts, and documenting investigation procedures through analyst playbooks and dashboards.
