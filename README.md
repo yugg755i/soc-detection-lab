@@ -1,141 +1,165 @@
-# old
 # SOC Detection Lab
 
-A home SOC environment built with Splunk Enterprise, Kali Linux, and Ubuntu Server to simulate, detect, and respond to common Linux attack scenarios. The lab focuses on generating realistic attack telemetry, developing detections, creating alerts, and documenting investigation procedures through analyst playbooks and dashboards.
+A Security Operations Center (SOC) detection engineering lab built with Splunk Enterprise. Simulates real-world attacker activity across Windows and Linux endpoints to build and validate a full detection pipeline (MITRE-mapped detections, alerts, and analyst playbooks) using real endpoint telemetry, not synthetic events.
 
-**Stack:** Splunk Enterprise · Splunk Universal Forwarder · Kali Linux · Ubuntu Server · VirtualBox
+- **12** documented detections, MITRE ATT&CK-mapped
+- **12** analyst playbooks, **12** scheduled alerts
+- Cross-platform telemetry: Sysmon, Windows Security Logs, Linux auth.log
+- Attacks executed from a dedicated Kali Linux attacker VM
+- Interactive SOC Overview Dashboard (Splunk Dashboard Studio)
 
-## Contents
-* [Screenshots](#screenshots)
-* [Architecture](#architecture)
-* [Lab Environment](#lab-environment)
-* [Attack Scenarios](#attack-scenarios)
-* [Detections](#detections)
-* [MITRE ATT&CK Mapping](#mitre-attck-mapping)
-* [Alerts](#alerts)
-* [Dashboard](#dashboard-1)
-* [Repository Structure](#repository-structure)
+## Table of Contents
 
-## Screenshots
+- [Preview](#preview)
+- [Architecture](#architecture)
+- [Detection Workflow](#detection-workflow)
+- [Detection Coverage](#detection-coverage)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Documentation](#documentation)
+- [Setup](#setup)
+- [Project Statistics](#project-statistics)
 
-### Dashboard
-![Dashboard](./screenshots/dashboards/dashboard.png)
-![Dashboard2](./screenshots/dashboards/dashboard2.png)
+## Preview
 
-### Alerts
-![alerts](./screenshots/alerts/alerts.png)
+### SOC Overview Dashboard
+Centralized operational view of the environment — authentication activity, endpoint telemetry, persistence events, and high-level KPIs.
+
+![Dashboard Overview](./screenshots/dashboards/dashboard1.png)
+
+### Linux Authentication Monitoring
+SSH authentication failures, password guessing activity, username enumeration, and other Linux-specific detections.
+
+![Linux Dashboard](./screenshots/dashboards/dashboard2.png)
+
+### Windows Endpoint Monitoring
+Sysmon process execution telemetry, persistence-related activity, and suspicious command execution.
+
+![Windows Dashboard](./screenshots/dashboards/dashboard3.png)
+
+### Alert Overview
+Every documented detection has an associated scheduled Splunk alert, used to validate the full detection pipeline end-to-end.
+
+![Alerts](./screenshots/alerts/alerts_overview.png)
 
 ## Architecture
 
-* **Kali Linux VM** — attacker, used to simulate brute force, enumeration, and post-exploitation activity
-* **Ubuntu Server VM** — victim, generates auth and system logs
-* **Splunk Universal Forwarder** — installed on the victim, forwards `/var/log/auth.log` (and related logs) to Splunk
-* **Splunk Enterprise** — SIEM platform for indexing, detection, alerting, and dashboarding
+A centralized Splunk Enterprise deployment runs on an Arch Linux host. Windows 10 and Ubuntu Server endpoints forward telemetry through Splunk Universal Forwarders, while a dedicated Kali Linux VM generates attack activity used to validate detections, alerts, dashboards, and playbooks.
 
-![Architecture](./architecture/architecture.png)
+![Architecture](./diagrams/architecture.png)
 
-## Lab Environment
+Full breakdown in [docs/architecture.md](docs/architecture.md).
 
-| Component                  | Purpose           |
-| -------------------------- | ------------------ |
-| Kali Linux                 | Attack simulation  |
-| Ubuntu Server              | Victim system      |
-| Splunk Universal Forwarder | Log collection     |
-| Splunk Enterprise          | SIEM platform      |
-| VirtualBox                 | Virtualization     |
+## Detection Workflow
 
-## Attack Scenarios
+Each detection follows the same validation loop: simulate the attack from Kali → generate real telemetry on the target endpoint → Splunk indexes and runs the SPL detection → alert fires → playbook documents the analyst response.
 
-| Scenario                       | Description |
-| ------------------------------- | ----------- |
-| SSH Brute Force                 | Repeated failed SSH logins against a single host from one source IP |
-| Password Guessing Success       | A failed-login streak followed by a successful authentication from the same source |
-| Username Enumeration            | Sequential login attempts across multiple usernames from the same source IP |
-| User Creation                   | New local user accounts created on the victim host |
-| Privileged Command Execution    | Use of `sudo` or other privileged commands following authentication |
+![Validation Workflow](./diagrams/workflow.png)
 
-## Detections
+Full breakdown in [docs/workflow.md](docs/workflow.md).
 
-Each detection below was built as a Splunk search and tuned against the generated telemetry to balance true-positive coverage with alert noise.
+## Detection Coverage
 
-**Example — SSH Brute Force Detection:**
-```spl
-index=main host="Ubuntu" "Failed password"
-| rex "from (?<src_ip>\d+\.\d+\.\d+\.\d+)"
-| stats count by src_ip
-| where count >= 10
-```
+| Platform | Detection | Data Source | ATT&CK Technique |
+|----------|-----------|-------------|------------------|
+| Windows | PowerShell Execution | Sysmon – Process Creation | T1059.001 |
+| Windows | Encoded PowerShell | Sysmon – Process Creation | T1059.001 |
+| Windows | CMD Execution | Sysmon – Process Creation | T1059.003 |
+| Windows | LOLBin Execution | Sysmon – Process Creation | T1218, T1105, T1197 |
+| Windows | Scheduled Task Creation | Sysmon – Process Creation | T1053.005 |
+| Windows | Service Creation | Sysmon – Process Creation | T1543.003 |
+| Windows | Local User Creation | Windows Security Log | T1136.001 |
+| Linux | SSH Brute Force | Linux Auth Log | T1110.001 |
+| Linux | Password Guessing Success | Linux Auth Log | T1110.001 |
+| Linux | Username Enumeration | Linux Auth Log | T1589.001 |
+| Linux | User Creation | Linux Auth Log | T1136.001 |
+| Linux | Privileged Command Execution | Linux Auth Log | T1548.003 |
 
-Full writeups (including thresholds, rationale, and false-positive considerations) for every detection are in [detections](./detections). 
+## Features
 
-Step-by-step analyst response procedures are in [playbooks](./playbooks). 
+### Detection Engineering
+- 12 production-style SPL detections covering Windows and Linux attack scenarios
+- Detection tuning guidance and false positive considerations
+- MITRE ATT&CK technique and tactic mappings
 
-Full lab build instructions are in [setup.md](./docs/setup.md).
+### Endpoint Monitoring
+- Windows: Sysmon – Process Creation, Windows Security Log
+- Linux: Linux Auth Log (SSH, user management, privilege escalation)
+- Centralized collection through Splunk Universal Forwarders
 
-## MITRE ATT&CK Mapping
+### Alerting
+- Scheduled Splunk alert for every documented detection
+- Alert severity classification based on detection context
+- Alert config documented alongside each detection
 
-| Attack Scenario              | Tactic              | Technique |
-| ------------------------------ | -------------------- | --------- |
-| SSH Brute Force                | Credential Access     | T1110.001 – Brute Force: Password Guessing |
-| Password Guessing Success      | Initial Access        | T1078 – Valid Accounts |
-| Username Enumeration | Reconnaissance | T1589 – Gather Victim Identity Information |
-| User Creation                  | Persistence           | T1136.001 – Create Account: Local Account |
-| Privileged Command Execution   | Privilege Escalation  | T1548.003 – Abuse Elevation Control Mechanism: Sudo |
+### SOC Dashboard
+- Built with Splunk Dashboard Studio
+- Environment summary KPIs, Linux + Windows monitoring panels
+- Interactive filtering by OS and time range
 
-## Alerts
+### Documentation
+- Per-detection docs: objective, SPL query, validation, tuning, references
+- Analyst investigation playbook for every detection
+- Architecture, workflow, setup, telemetry, and dashboard docs
 
-Each detection above has a corresponding Splunk alert, scheduled on a recurring search with thresholds tuned to the detection logic:
-
-* SSH Brute Force Detection
-* Password Guessing Success
-* Username Enumeration
-* User Creation
-* Privileged Command Execution
-
-Alerts trigger when detection thresholds are exceeded and are available through the Splunk alerting interface for analyst review.
-
-## Dashboard
-
-A custom SOC dashboard visualizes:
-
-* Failed login attempts over time
-* Successful logins
-* Source IP activity
-* Targeted usernames
-* User creation events
-* Privileged command usage
-
-The dashboard provides visibility into authentication activity, attack simulations, and detection results across the lab environment.
-
-## Repository Structure
+## Project Structure
 
 ```text
-soc-lab/
-├── architecture/
-│   └── architecture.png
-├── detections/
-│   ├── brute_force.md
-│   ├── password_guessing_success.md
-│   ├── privileged_command_execution.md
-│   ├── user_creation.md
-│   └── username_enumeration.md
-├── docs/
-│   └── setup.md
-├── playbooks/
-│   ├── password_guessing_playbook.md
-│   ├── privileged_command_playbook.md
-│   ├── ssh-bruteforce.md
-│   ├── user_creation_playbook.md
-│   └── username_enumeration_playbook.md
+soc-detection-lab/
+├── detections/                 # Detection documentation
+├── playbooks/                  # Analyst investigation playbooks
+├── diagrams/                   # Architecture and workflow diagrams
 ├── screenshots/
+├── docs/
+│   ├── architecture.md         # Lab architecture
+│   ├── dashboards.md           # Dashboard implementation
+│   ├── detections.md           # Detection catalog
+│   ├── setup.md                # Environment deployment
+│   ├── telemetry.md            # Collected telemetry
+│   └── workflow.md             # Detection validation workflow
 └── README.md
 ```
 
-## Key Takeaways
+## Documentation
 
-Building this lab reinforced several core SOC concepts:
+| Document | Description |
+|----------|-------------|
+| [Setup](docs/setup.md) | Deploy and configure the lab environment |
+| [Architecture](docs/architecture.md) | Infrastructure and data flow |
+| [Workflow](docs/workflow.md) | Detection validation workflow |
+| [Telemetry](docs/telemetry.md) | Collected telemetry and data sources |
+| [Detection Catalog](docs/detections.md) | Overview of all implemented detections |
+| [Dashboard](docs/dashboards.md) | Dashboard Studio implementation |
+| [Detections](detections/) | Individual detection documentation |
+| [Playbooks](playbooks/) | Analyst investigation procedures |
 
-- The importance of generating realistic telemetry before writing detections.
-- How authentication logs can be used to identify brute force, password guessing, and account creation activity.
-- The difference between creating a detection and creating an actionable analyst workflow through alerts and playbooks.
-- The value of threshold tuning to reduce false positives while maintaining visibility into suspicious activity.
+## Setup
+
+```bash
+git clone https://github.com/yugg755i/soc-detection-lab.git
+cd soc-detection-lab
+```
+
+Then:
+- Install Splunk Enterprise
+- Configure Splunk Universal Forwarders
+- Deploy Sysmon on Windows
+- Configure Ubuntu log forwarding
+- Validate telemetry ingestion
+
+Full deployment instructions in [docs/setup.md](docs/setup.md).
+
+## Project Statistics
+
+| Metric | Value |
+| --- | ---: |
+| Monitored Endpoints | 2 |
+| Attacker VM | 1 |
+| Detection Rules | 12 |
+| Analyst Playbooks | 12 |
+| Scheduled Alerts | 12 |
+| Dashboard Studio Dashboards | 1 |
+| Windows Detections | 7 |
+| Linux Detections | 5 |
+| Primary Data Sources | Sysmon, Windows Security, auth.log |
+| Detection Framework | MITRE ATT&CK |
